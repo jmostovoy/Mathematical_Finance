@@ -33,4 +33,25 @@ gucci10<-Day_10[y,]
 View(gucci10)
 rownames(gucci10) <- seq(length=nrow(gucci10))
 
+r<-rep(1, 10)
+r[1]<-((gucci10[1,4])/((gucci10[1,2])+100))^-1-1
+for (i in c(2:10)) {
+  r[i]<-(gucci10[i,4]-sum((gucci10[i,2]/2)/(1+r[c(1:i-1)])^(c(1:i-1))))/(100+gucci10[i,2]/2)^(-i)-1
+}
+sum((gucci10[3,2]/2)/(1+r[c(1:1)])^(c(1:1)))
+
+
+cool<-rep(1, 9)
+
+for (i in length(cool)) {
+  cool[i]<-as.numeric(month(x[i+1])-month(x[i]))
+}
+
+
+
+cool
+
+month(x[10])-month(x[9])
+
+
 
