@@ -1,3 +1,5 @@
+####Part 1####
+
 #Install and load packages to be used
 
 install.packages("lubridate")
@@ -70,7 +72,7 @@ title(ylab="Yield (in %)", col.lab=rgb(0,0.6,.7))
 
 
 
-#Working Area
+####Working Area####
 sum((gucci10[3,2]/2)/(1+r[c(1:1)])^(c(1:1)))
 sum((gucci10[2,2]/2)/((1+r[c(1:3)]^(c(1:3)))))
 
