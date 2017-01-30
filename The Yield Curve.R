@@ -56,7 +56,8 @@ r
 gucci10<-data.frame(gucci10, 2*r)
 colnames(gucci10) <- c("country","coupon", "date", "price", "ytm", "yield")
 
-plot(gucci10[,3], gucci10[,6])
+
+#Plot graphs
 
 plot_colours <- c("blue", "red", "forestgreen", "yellow")
 plot_colours1 <- plot_colours[c(1,2)]
