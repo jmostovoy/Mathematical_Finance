@@ -2,7 +2,6 @@
 
 #Install and load packages to be used
 
-install.packages("lubridate")
 library(lubridate)
 
 
@@ -10,85 +9,139 @@ library(lubridate)
 setwd("~/Documents/Mathematical_Finance")
 
 #Import data
-Day_10<-read.csv("Day_10.csv", header=F)
+bonds<-read.csv("Complete_Data.csv", header=F)
 
 #Manipulate and select relevent data
-Day_10<-as.data.frame(Day_10)
-View(Day_10)
-day_10_can_true<-Day_10[,1]=="Canada"
-Day_10<-Day_10[day_10_can_true,1:5]
-Day_10[,3]<-as.Date(Day_10[,3], "%Y-%B-%d")
-rownames(Day_10) <- seq(length=nrow(Day_10))
-colnames(Day_10) <- c("country","coupon", "date", "price", "ytm")
+bonds<-as.data.frame(bonds)
+View(bonds)
+bonds<-bonds[,c(1:6)]
+bonds<-bonds[-c(1:3, 48:51, 96:99, 144:147, 192:195, 240:243, 
+                288:292, 336:339, 384:387, 432:435),]
+rownames(bonds) <- seq(length=nrow(bonds))
+bonds[,3]<-as.Date(bonds[,3], "%Y-%B-%d")
+bonds[,6]<-as.Date(bonds[,6], "%Y-%B-%d")
+colnames(bonds) <- c("country","coupon", 
+                     "effmaturity", "price", "ytm", "date")
 
+#Find when dates change
+chgdate<-c(0, 44, 44*2, 44*3, 44*4, 44*5, 44*6, 
+           44*7, 44*8, 44*8+43, 44*8+43*2)
+c((chgdate[10]+1):chgdate[11])
 
 #Initialize a date vector
 x<-rep(as.Date("2017-01-20"), 10)
+X<-data.frame(x, x, x, x, x, x, x, x, x, x)
 
 #Loop to set dates of interest
-for (i in c(1:10)) {
-  month(x[i])<-month(x[i])+6*i
+for( j in c(1:10)){
+  for (i in c(1:10)) {
+    month(X[i,j])<-month(X[i,j])+6*i
+  }
 }
-x<-as.Date(x)
-x
+colnames(X)<-unique(bonds$date)
+View(X)
 
 #Intialize another date vector, and perform a loop
 #that selects the closest date to that of our interest
 #In 6 month intervals
 y<-rep(1, 10)
-for (i in c(1:10)) {
-  y[i]<-which(abs(Day_10[,3]-x[i]) == min(abs(Day_10[,3] - x[i])))
+Y<-data.frame(y, y, y, y, y, y, y, y, y, y)
+for (j in c(1:10)) {
+  for (i in c(1:10)) {
+    Y[i,j]<-which(abs(bonds[c((chgdate[j]+1):chgdate[j+1]),3]
+                      -X[i,j]) == min(abs(bonds[c((chgdate[j]+1):chgdate[j+1]),3]-X[i,j])))
+  }
 }
-y
+View(Y)
+
+
+for (i in c(1:10)) {
+  X[,i]<-bonds[(chgdate[i]+c(Y[,i])),3]
+}
+
+chgdatetotal<-c(chgdate[1]+c(Y[,1]), chgdate[2]+c(Y[,2]),
+                chgdate[3]+c(Y[,3]), chgdate[4]+c(Y[,4]),
+                chgdate[5]+c(Y[,5]), chgdate[6]+c(Y[,6]),
+                chgdate[7]+c(Y[,7]), chgdate[8]+c(Y[,8]),
+                chgdate[9]+c(Y[,9]), chgdate[10]+c(Y[,10]))
+chgdatetotal
 
 #reduce dataframe to data of interest
-gucci10<-Day_10[y,]
-View(gucci10)
-rownames(gucci10) <- seq(length=nrow(gucci10))
+
+subbonds<-bonds[chgdatetotal,]
+View(subbonds)
+rownames(subbonds) <- seq(length=nrow(subbonds))
+
+#Some quick alterations
+subbonds[,1]<-as.character(subbonds[,1])
+subbonds[,2]<-as.numeric(as.character(subbonds[,2]))
+subbonds[,4]<-as.numeric(as.character(subbonds[,4]))
+subbonds[,5]<-as.numeric(as.character(subbonds[,5]))
 
 
 #Compute yields
+
 r<-rep(1, 10)
-r[1]<-((gucci10[1,4])/((gucci10[1,2])/2+100))^-1-1
-for (i in c(2:10)) {
-  r[i]<-((gucci10[i,4]-sum((gucci10[i,2]/2)/((1+r[c(1:(i-1))])^(c(1:(i-1))))))/(100+gucci10[i,2]/2))^(-(1/i))-1
+R<-data.frame(r, r, r, r, r, r, r, r, r, r)
+for (j in c(1:10)) {
+  R[1,j]<-((subbonds[(10*j-9),4])/((subbonds[(10*j-9),2])/2+100))^-1-1
 }
-r
+View(R)
 
-gucci10<-data.frame(gucci10, 2*r)
-colnames(gucci10) <- c("country","coupon", "date", "price", "ytm", "yield")
+for (j in c(1:10)) {
+  for (i in c(2:10)) {
+    R[i,j]<-((subbonds[((10*j-10)+i),4]-sum((subbonds[((10*j-10)+i),2]/2)/((1+R[c(1:(i-1)),j])^(c(1:(i-1))))))*(100+subbonds[((10*j-10)+i),2]/2)^(-1))^(-1/i)-1
+  }
+}
+
+R<-2*R
+R<-as.data.frame(unlist(R))
+colnames(R)<-c("yield")
+rownames(R) <- seq(length=nrow(R))
+
+subbonds<-data.frame(subbonds, R)
 
 
-#Plot graphs
+#### Plots ####
 
-plot_colours <- c("blue", "red", "forestgreen", "yellow")
+plot_colours <- c("blue", "red", "forestgreen", "yellow", rgb(0.3,0.3,.3), rgb(0.6,0.3,0), rgb(.9,0,0), rgb(0.3,0.6,0), rgb(0.3,0,.6), rgb(0,0.3,.6))
 plot_colours1 <- plot_colours[c(1,2)]
 
-plot(gucci10[,3], 100*gucci10[,6], type="l", col=plot_colours1[1], ann=FALSE)
-title(main="Yiled Curve for 2017-01-20", col.main="forestgreen", font.main=4)
+for (i in c(1:10)) {
+  png(filename=paste("~/Documents/", paste("Yield_Curve_", subbonds[10*i-9,6], ".png", sep=""), sep=""), width = 1000, height = 600)
+  plot(subbonds[c((10*i-9):(10*i)),3], 100*subbonds[c((10*i-9):(10*i)),7], type="l", col=plot_colours1[1], ann=FALSE)
+  title(main=paste("Yield Curve for ", subbonds[10*i-9,6], sep=""), col.main="forestgreen", font.main=3)
+  title(xlab="Date", col.lab=rgb(0,0.6,.7))
+  title(ylab="Yield (in %)" , col.lab=rgb(0,0.6,.7))
+  dev.off()
+}
+
+plot(subbonds[c((1):(10)),3], 100*subbonds[c(1:10),7], type="l", col=plot_colours[1], ann=FALSE)
+lines(subbonds[c((10*2-9):(10*2)),3], 100*subbonds[c((10*2-9):(10*2)),7], type="l", 
+      lty=1, col=plot_colours[2])
+lines(subbonds[c((10*3-9):(10*3)),3], 100*subbonds[c((10*3-9):(10*3)),7], type="l", 
+      lty=1, col=plot_colours[3])
+lines(subbonds[c((10*4-9):(10*4)),3], 100*subbonds[c((10*4-9):(10*4)),7], type="l", 
+      lty=1, col=plot_colours[4])
+lines(subbonds[c((10*5-9):(10*5)),3], 100*subbonds[c((10*5-9):(10*5)),7], type="l", 
+      lty=1, col=plot_colours[5])
+lines(subbonds[c((10*6-9):(10*6)),3], 100*subbonds[c((10*6-9):(10*6)),7], type="l", 
+      lty=1, col=plot_colours[6])
+lines(subbonds[c((10*7-9):(10*7)),3], 100*subbonds[c((10*7-9):(10*7)),7], type="l", 
+      lty=1, col=plot_colours[7])
+lines(subbonds[c((10*8-9):(10*8)),3], 100*subbonds[c((10*8-9):(10*8)),7], type="l", 
+      lty=1, col=plot_colours[8])
+lines(subbonds[c((10*9-9):(10*9)),3], 100*subbonds[c((10*i-9):(10*9)),7], type="l", 
+      lty=1, col=plot_colours[9])
+lines(subbonds[c((10*10-9):(10*10)),3], 100*subbonds[c((10*i-10):(10*10)),7], type="l", 
+      lty=1, col=plot_colours[10])
+
+title(main="All Yield Curves", 
+      col.main="forestgreen", font.main=4)
 title(xlab="Date", col.lab=rgb(0,0.6,.7))
-title(ylab="Yield (in %)", col.lab=rgb(0,0.6,.7))
-
-
+title(ylab="Yield (in %)" , col.lab=rgb(0,0.6,.7))
+legend(as.Date("2017-08-01"), 1.2, paste("Yield Curve for ", subbonds[c(1,11,21,31,41,51,61,71,81,91),6], sep=""), lty=c(1,1), 
+       lwd=c(2,2),cex=.8, bty = "n", col=plot_colours)
 
 
 ####Working Area####
-sum((gucci10[3,2]/2)/(1+r[c(1:1)])^(c(1:1)))
-sum((gucci10[2,2]/2)/((1+r[c(1:3)]^(c(1:3)))))
-
-sum((gucci10[2,2]/2)/((1+r[1]^((1)))))+sum((gucci10[2,2]/2)/((1+r[2]^((2)))))+sum((gucci10[2,2]/2)/((1+r[3]^((3)))))
-
-cool<-rep(1, 9)
-
-for (i in length(cool)) {
-  cool[i]<-as.numeric(month(x[i+1])-month(x[i]))
-}
-
-
-
-cool
-
-month(x[10])-month(x[9])
-
-
-
