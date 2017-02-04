@@ -145,8 +145,47 @@ legend(as.Date("2017-08-01"), 1.2, paste("Yield Curve for ", subbonds[c(1,11,21,
 
 #### Forward Rates ####
 
+Ryrs<-as.data.frame(R[c(c(1:100)%%2==0),])
+View(Ryrs)
+colnames(Ryrs)<-c("yield")
+Ryrs<-as.vector(t(Ryrs))
 
+f<-rep(1,10)
+f<-data.frame(f,f,f,f,f,f,f,f,f,f)
+View(f)
 
+g<-rep(1,4)
+f1<-data.frame(g,g,g,g,g,g,g,g,g,g)
+for (j in c(1:10)) {
+  for (i in c(1:4)) {
+    f1[i,j]<-(1+Ryrs[j*5-4+i])^(i+1)*(1+Ryrs[j*5-5+i])^(-(i))-1
+  }
+}
+h<-rep(1,3)
+f2<-data.frame(h,h,h,h,h,h,h,h,h,h)
+for (j in c(1:10)) {
+  for (i in c(1,2,3)) {
+    f2[i,j]<-((1+Ryrs[j*5-3+i])^(2+i)*(1+Ryrs[j*5-5+i])^(-(i)))^(1/2)-1
+  }
+}
+k<-rep(1,2)
+f3<-data.frame(k,k,k,k,k,k,k,k,k,k)
+for (j in c(1:10)) {
+  for (i in c(1,2)) {
+    f3[i,j]<-((1+Ryrs[j*5-2+i])^(3+i)*(1+Ryrs[j*5-5+i])^(-(i)))^(1/3)-1
+  }
+}
+f4<-data.frame(c(1),c(1),c(1),c(1),c(1),c(1),c(1),c(1),c(1),c(1))
+for (j in c(1:10)) {
+  f4[1,j]<-((1+Ryrs[j*5])^(5)*(1+Ryrs[j*5-4])^(-(1)))^(1/4)-1
+}
+f[c(1, 5, 8, 10),]<-f1
+f[c(2,6,9),]<-f2
+f[c(3,7),]<-f3
+f[c(4),]<-f4
+
+plot(subbonds[c(4,6,8,10),3],100*f[c(1,5,8,10),1], type="l", col=plot_colours[1])
+plot(subbonds[c(4,6,8,10),3],100*f[c((1):(4)),1], type="l", col=plot_colours[1])
 
 ####Working Area####
 
