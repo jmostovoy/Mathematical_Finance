@@ -184,10 +184,19 @@ f[c(2,6,9),]<-f2
 f[c(3,7),]<-f3
 f[c(4),]<-f4
 
-plot(subbonds[c(4,6,8,10),3],100*f[c(1,5,8,10),1], type="l", col=plot_colours[1])
-plot(subbonds[c(4,6,8,10),3],100*f[c((1):(4)),1], type="l", col=plot_colours[1])
+colnames(f)<-unique(subbonds[,6])
+rownames(f)<-c("f12", "f13", "f14", "f15", "f23", "f24", "f25", "f34",
+               "f35", "f45")
 
 ####Working Area####
 
+timing<-rep(1, 50)
+for (i in c(1:50)) {
+  timing[i]<-timing[i]+2*(i-1)+1
+}
+
+bondsyr<-subbonds[timing, ]
+View(bondsyr)
+rownames(bondsyr) <- seq(length=nrow(bondsyr))
 
 
