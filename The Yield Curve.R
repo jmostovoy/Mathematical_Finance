@@ -194,9 +194,40 @@ timing<-rep(1, 50)
 for (i in c(1:50)) {
   timing[i]<-timing[i]+2*(i-1)+1
 }
-
 bondsyr<-subbonds[timing, ]
 View(bondsyr)
 rownames(bondsyr) <- seq(length=nrow(bondsyr))
+
+diff1<-diff(bondsyr[c(c(1:50)%%5==1),7])
+diff2<-diff(bondsyr[c(c(1:50)%%5==2),7])
+diff3<-diff(bondsyr[c(c(1:50)%%5==3),7])
+diff4<-diff(bondsyr[c(c(1:50)%%5==4),7])
+diff5<-diff(bondsyr[c(c(1:50)%%5==0),7])
+
+for (i in c(1:9)) {
+  diff1[i]<-log(bondsyr[5*i+1,7]/bondsyr[5*i-4,7])
+}
+
+for (i in c(1:9)) {
+  diff2[i]<-log(bondsyr[5*i+2,7]/bondsyr[5*i-3,7])
+}
+
+for (i in c(1:9)) {
+  diff3[i]<-log(bondsyr[5*i+3,7]/bondsyr[5*i-2,7])
+}
+
+for (i in c(1:9)) {
+  diff4[i]<-log(bondsyr[5*i+4,7]/bondsyr[5*i-1,7])
+}
+
+for (i in c(1:9)) {
+  diff5[i]<-log(bondsyr[5*(i+1),7]/bondsyr[5*i,7])
+}
+
+dif<-data.frame(diff1, diff2, diff3, diff4, diff5)
+View(dif)
+
+cov(dif, dif)
+eigen(cov(dif, dif), symmetric='T')
 
 
