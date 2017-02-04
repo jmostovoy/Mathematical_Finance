@@ -108,7 +108,7 @@ plot_colours <- c("blue", "red", "forestgreen", "yellow", rgb(0.3,0.3,.3), rgb(0
 plot_colours1 <- plot_colours[c(1,2)]
 
 for (i in c(1:10)) {
-  png(filename=paste("~/Documents/", paste("Yield_Curve_", subbonds[10*i-9,6], ".png", sep=""), sep=""), width = 1000, height = 600)
+  pdf(file=paste("~/Documents/Mathematical_Finance/", paste("Yield_Curve_", subbonds[10*i-9,6], ".pdf", sep=""), sep=""), width = 10, height = 6)
   plot(subbonds[c((10*i-9):(10*i)),3], 100*subbonds[c((10*i-9):(10*i)),7], type="l", col=plot_colours1[1], ann=FALSE)
   title(main=paste("Yield Curve for ", subbonds[10*i-9,6], sep=""), col.main="forestgreen", font.main=3)
   title(xlab="Date", col.lab=rgb(0,0.6,.7))
@@ -143,5 +143,12 @@ title(ylab="Yield (in %)" , col.lab=rgb(0,0.6,.7))
 legend(as.Date("2017-08-01"), 1.2, paste("Yield Curve for ", subbonds[c(1,11,21,31,41,51,61,71,81,91),6], sep=""), lty=c(1,1), 
        lwd=c(2,2),cex=.8, bty = "n", col=plot_colours)
 
+#### Forward Rates ####
+
+
+
 
 ####Working Area####
+
+
+
