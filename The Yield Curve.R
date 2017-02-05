@@ -229,5 +229,3 @@ View(dif)
 
 cov(dif, dif)
 eigen(cov(dif, dif), symmetric='T')
-
-
