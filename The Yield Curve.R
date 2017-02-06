@@ -58,6 +58,8 @@ View(Y)
 for (i in c(1:10)) {
   X[,i]<-bonds[(chgdate[i]+c(Y[,i])),3]
 }
+xtable(as.data.frame(as.character(X[,1])))
+
 
 chgdatetotal<-c(chgdate[1]+c(Y[,1]), chgdate[2]+c(Y[,2]),
                 chgdate[3]+c(Y[,3]), chgdate[4]+c(Y[,4]),
@@ -187,8 +189,11 @@ f[c(4),]<-f4
 colnames(f)<-unique(subbonds[,6])
 rownames(f)<-c("f12", "f13", "f14", "f15", "f23", "f24", "f25", "f34",
                "f35", "f45")
+f<-t(f)
+f<-100*f
+xtable(f, digits = 3)
 
-####Working Area####
+####Covariance Matrix & Eigen Calculations####
 
 timing<-rep(1, 50)
 for (i in c(1:50)) {
@@ -227,5 +232,256 @@ for (i in c(1:9)) {
 dif<-data.frame(diff1, diff2, diff3, diff4, diff5)
 View(dif)
 
-cov(dif, dif)
-eigen(cov(dif, dif), symmetric='T')
+covdif<-cov(dif, dif)
+xtable(10^4*covdif, digits = 4)
+eeg<-eigen(cov(dif, dif), symmetric='T')
+xtable(1000*as.data.frame(eeg$values), digits = 4)
+
+####Covariance Matrix & Eigen forward####
+View(f)
+
+diff1<-c(1:9)
+diff2<-c(1:9)
+diff3<-c(1:9)
+diff4<-c(1:9)
+diff5<-c(1:9)
+diff6<-c(1:9)
+diff7<-c(1:9)
+diff8<-c(1:9)
+diff9<-c(1:9)
+diff10<-c(1:9)
+
+for (i in c(1:9)) {
+  diff1[i]<-log(f[i+1,1]/f[i,1])
+}
+
+for (i in c(1:9)) {
+  diff2[i]<-log(f[i+1,2]/f[i,2])
+}
+
+for (i in c(1:9)) {
+  diff3[i]<-log(f[i+1,3]/f[i,3])
+}
+
+for (i in c(1:9)) {
+  diff4[i]<-log(f[i+1,4]/f[i,4])
+}
+
+for (i in c(1:9)) {
+  diff5[i]<-log(f[i+1,5]/f[i,5])
+}
+
+for (i in c(1:9)) {
+  diff6[i]<-log(f[i+1,6]/f[i,6])
+}
+
+for (i in c(1:9)) {
+  diff7[i]<-log(f[i+1,7]/f[i,7])
+}
+
+for (i in c(1:9)) {
+  diff8[i]<-log(f[i+1,8]/f[i,8])
+}
+
+for (i in c(1:9)) {
+  diff9[i]<-log(f[i+1,9]/f[i,9])
+}
+
+for (i in c(1:9)) {
+  diff10[i]<-log(f[i+1,10]/f[i,10])
+}
+
+dif<-data.frame(diff1, diff2, diff3, diff4, diff5, 
+                diff6, diff7, diff8, diff9, diff10)
+View(dif)
+covdif<-cov(dif, dif)
+xtable(10^4*covdif, digits = 3)
+eeg<-eigen(cov(dif, dif), symmetric='T')
+eeg
+xtable(eeg$vectors, digits = 3)
+
+
+####Forward Curves####
+
+YY1<-c(seq(subbonds$yield[1], subbonds$yield[2], length.out=200),
+       seq(subbonds$yield[2], subbonds$yield[3], length.out=200),
+       seq(subbonds$yield[3], subbonds$yield[4], length.out=200),
+       seq(subbonds$yield[4], subbonds$yield[5], length.out=200),
+       seq(subbonds$yield[5], subbonds$yield[6], length.out=200),
+       seq(subbonds$yield[6], subbonds$yield[7], length.out=200),
+       seq(subbonds$yield[7], subbonds$yield[8], length.out=200),
+       seq(subbonds$yield[8], subbonds$yield[9], length.out=200),
+       seq(subbonds$yield[9], subbonds$yield[10], length.out=200))
+
+YY2<-YY1
+YY3<-YY1
+YY4<-YY1
+YY5<-YY1
+YY6<-YY1
+YY7<-YY1
+YY8<-YY1
+YY9<-YY1
+YY10<-YY1
+length(YY1)
+
+for (i in c(1:9)) {
+  YY2[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+10], subbonds_c$yield[i+11], length.out=200)
+}
+for (i in c(1:9)) {
+  YY3[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+20], subbonds_c$yield[i+21], length.out=200)
+}
+for (i in c(1:9)) {
+  YY4[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+30], subbonds_c$yield[i+31], length.out=200)
+}
+for (i in c(1:9)) {
+  YY5[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+40], subbonds_c$yield[i+41], length.out=200)
+}
+for (i in c(1:9)) {
+  YY6[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+50], subbonds_c$yield[i+51], length.out=200)
+}
+for (i in c(1:9)) {
+  YY7[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+60], subbonds_c$yield[i+61], length.out=200)
+}
+for (i in c(1:9)) {
+  YY8[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+70], subbonds_c$yield[i+71], length.out=200)
+}
+for (i in c(1:9)) {
+  YY9[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+80], subbonds_c$yield[i+81], length.out=200)
+}
+for (i in c(1:9)) {
+  YY10[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+90], subbonds_c$yield[i+91], length.out=200)
+}
+
+gucci2<-seq(1,5, length.out=2*899+1)
+dYnorm1<--480*diff(log(YY1))
+dYnorm2<--480*diff(log(YY2))
+dYnorm3<--480*diff(log(YY3))
+dYnorm4<--480*diff(log(YY4))
+dYnorm5<--480*diff(log(YY5))
+dYnorm6<--480*diff(log(YY6))
+dYnorm7<--480*diff(log(YY7))
+dYnorm8<--480*diff(log(YY8))
+dYnorm9<--480*diff(log(YY9))
+dYnorm10<--480*diff(log(YY10))
+
+for (i in c(1:length(dYnorm1))) {
+  dYnorm1[i]<- if(i%%200==0) {
+    (dYnorm1[i-1]+dYnorm1[i+1])*.5
+  } else {
+    dYnorm1[i]
+  }
+}
+for (i in c(1:length(dYnorm2))) {
+  dYnorm2[i]<- if(i%%200==0) {
+    (dYnorm2[i-1]+dYnorm2[i+1])*.5
+  } else {
+    dYnorm2[i]
+  }
+}
+for (i in c(1:length(dYnorm3))) {
+  dYnorm3[i]<- if(i%%200==0) {
+    (dYnorm3[i-1]+dYnorm3[i+1])*.5
+  } else {
+    dYnorm3[i]
+  }
+}
+for (i in c(1:length(dYnorm4))) {
+  dYnorm4[i]<- if(i%%200==0) {
+    (dYnorm4[i-1]+dYnorm4[i+1])*.5
+  } else {
+    dYnorm4[i]
+  }
+}
+for (i in c(1:length(dYnorm5))) {
+  dYnorm5[i]<- if(i%%200==0) {
+    (dYnorm5[i-1]+dYnorm5[i+1])*.5
+  } else {
+    dYnorm5[i]
+  }
+}
+for (i in c(1:length(dYnorm6))) {
+  dYnorm6[i]<- if(i%%200==0) {
+    (dYnorm6[i-1]+dYnorm6[i+1])*.5
+  } else {
+    dYnorm6[i]
+  }
+}
+for (i in c(1:length(dYnorm7))) {
+  dYnorm7[i]<- if(i%%200==0) {
+    (dYnorm7[i-1]+dYnorm7[i+1])*.5
+  } else {
+    dYnorm7[i]
+  }
+}
+for (i in c(1:length(dYnorm8))) {
+  dYnorm8[i]<- if(i%%200==0) {
+    (dYnorm8[i-1]+dYnorm8[i+1])*.5
+  } else {
+    dYnorm8[i]
+  }
+}
+for (i in c(1:length(dYnorm9))) {
+  dYnorm9[i]<- if(i%%200==0) {
+    (dYnorm9[i-1]+dYnorm9[i+1])*.5
+  } else {
+    dYnorm9[i]
+  }
+}
+for (i in c(1:length(dYnorm10))) {
+  dYnorm10[i]<- if(i%%200==0) {
+    (dYnorm10[i-1]+dYnorm10[i+1])*.5
+  } else {
+    dYnorm10[i]
+  }
+}
+
+lonorm2 <- loess(dYnorm5~gucci2)
+xl <- seq(min(gucci2),max(gucci2), (max(gucci2) - min(gucci2))/10000)
+
+plot(gucci2, dYnorm1, type="p", cex=.2, col=plot_colours[1], ann=FALSE)
+
+lines(gucci2, dYnorm2, type="p", cex=.2, 
+      lty=1, col=plot_colours[2])
+lines(gucci2, dYnorm3, type="p", cex=.2,
+      lty=1, col=plot_colours[3])
+lines(gucci2, dYnorm4, type="p", cex=.2,
+      lty=1, col=plot_colours[4])
+lines(gucci2, dYnorm5, type="p", cex=.2,
+      lty=1, col=plot_colours[5])
+lines(gucci2, dYnorm6, type="p", cex=.2,
+      lty=1, col=plot_colours[6])
+lines(gucci2, dYnorm7,type="p", cex=.2,
+      lty=1, col=plot_colours[7])
+lines(gucci2, dYnorm8, type="p", cex=.2,
+      lty=1, col=plot_colours[8])
+lines(gucci2, dYnorm9, type="p", cex=.2,
+      lty=1, col=plot_colours[9])
+lines(gucci2, dYnorm10, type="p", cex=.2,
+      lty=1, col=plot_colours[10])
+
+title(main="Forward Curves", 
+      col.main="forestgreen", font.main=4)
+title(xlab="Year", col.lab=rgb(0,0.6,.7))
+title(ylab="f(t,T)" , col.lab=rgb(0,0.6,.7))
+lines(xl, predict(lonorm2,xl), col='red', lwd=2)
+
+legend(3.8, -.3, c(paste("Forward Curve for ", subbonds_c[c(1,11,21,31,41,51,61,71,81,91),6], sep=""),"Approx. Mean Frwd Curve"), lty=c(1,1), 
+       lwd=c(2,2),cex=.75, bty = "n", col=c(plot_colours,"red"))
+
+
+#### Tables ####
+
+rsb<-round(100*subbonds$yield, 3)
+rsb<-data.frame(rsb[c(1:10)], rsb[c(11:20)], rsb[c(21:30)], 
+                  rsb[c(31:40)], rsb[c(41:50)], rsb[c(51:60)],
+                  rsb[c(61:70)], rsb[c(71:80)], rsb[c(81:90)],
+                  rsb[c(91:100)])
+rsb<-t(rsb)
+colnames(rsb)<-c("$r_{1/2}$", "$r_{1}$" , "$r_{3/2}$" , "$r_{2}$" ,
+                   "$r_{5/2}$" , "$r_{3}$"  , "$r_{7/2}$" , 
+                   "$r_{4}$" , "$r_{9/2}$" , "$r_{5}$")
+rownames(rsb)<-as.character(unique(subbonds$date))
+View(rsb)
+xtable(rsb, digits = 3)
+
+
