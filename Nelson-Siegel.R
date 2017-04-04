@@ -13,8 +13,11 @@ x9<-100*subbonds$yield[c(81:90)]
 x10<-100*subbonds$yield[c(91:100)]
 
 xx<-data.frame(x1, x2, x3, x3, x5, x6, x7, x8, x9, x10)
-colnames(xx)<-c("R_6M", "R_1Y", "R_1.5Y", "R_2Y", "R_2.5Y", "R_3Y", "R_3.5Y", "R_4Y", "R_4.5Y", "R_5Y")
-xtssubbonds<-xts(x = t(xx), order.by = subbonds$date[c(1, 11, 21, 31, 41, 51, 61, 71, 81, 91)])
+colnames(xx)<-c("R_6M", "R_1Y", "R_1.5Y", "R_2Y", "R_2.5Y", 
+                "R_3Y", "R_3.5Y", "R_4Y", "R_4.5Y", "R_5Y")
+xtssubbonds<-xts(x = t(xx), order.by = subbonds$date[c(1, 11, 
+                                                       21, 31, 41, 51,
+                                                       61, 71, 81, 91)])
 
 maturity.Fed <- c(.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5)
 NSParameters <- Nelson.Siegel( rate=xtssubbonds, maturity=maturity.Fed)
@@ -88,9 +91,11 @@ dY7 <- loess(dY7~guccio)
 dY8 <- loess(dY8~guccio)
 dY9 <- loess(dY9~guccio)
 dY10 <- loess(dY10~guccio)
-xll <- seq(min(guccio),max(guccio), (max(guccio) - min(guccio))/10000)
+xll <- seq(min(guccio),max(guccio), 
+           (max(guccio) - min(guccio))/10000)
 
-plot(xll, predict(dY1,xll), type="l", col=plot_colours[1],lty=1, ann=FALSE)
+plot(xll, predict(dY1,xll), type="l",
+     col=plot_colours[1],lty=1, ann=FALSE)
 
 lines(xll, predict(dY2,xll), type="l",
       lty=1, col=plot_colours[2])
@@ -115,5 +120,7 @@ title(main="N-S Forward Curves",
       col.main="forestgreen", font.main=4)
 title(xlab="Year", col.lab=rgb(0,0.6,.7))
 title(ylab="f(t,T)" , col.lab=rgb(0,0.6,.7))
-legend(3.4, -.4, paste("N-S Forward Curve for ", subbonds_c[c(1,11,21,31,41,51,61,71,81,91),6], sep=""), lty=c(1,1), 
+legend(3.4, -.4, paste("N-S Forward Curve for ",
+                       subbonds_c[c(1,11,21,31,41,51,61,71,81,91),6],
+                       sep=""), lty=c(1,1), 
        lwd=c(2,2),cex=.8, bty = "n", col=c(plot_colours))

@@ -90,7 +90,9 @@ View(R_c)
 
 for (j in c(1:10)) {
   for (i in c(2:10)) {
-    R_c[i,j]<--log((subbonds[((10*j-10)+i),4]-sum((subbonds[((10*j-10)+i),2]/2)*exp(-(i/2)*R_c[c(1:(i-1)),j])))/(100+subbonds[((10*j-10)+i),2]/2))/(i/2)
+    R_c[i,j]<--log((subbonds[((10*j-10)+i),4]-
+                      sum((subbonds[((10*j-10)+i),2]/2)*exp(-(i/2)*R_c[c(1:(i-1)),j])))
+                   /(100+subbonds[((10*j-10)+i),2]/2))/(i/2)
   }
 }
 
@@ -103,19 +105,27 @@ View(subbonds_c)
 
 #### Plots ####
 
-plot_colours <- c("blue", "red", "forestgreen", "yellow", rgb(0.3,0.3,.3), rgb(0.6,0.3,0), rgb(.9,0,0), rgb(0.3,0.6,0), rgb(0.3,0,.6), rgb(0,0.3,.6))
+plot_colours <- c("blue", "red", "forestgreen", "yellow", rgb(0.3,0.3,.3), 
+                  rgb(0.6,0.3,0), rgb(.9,0,0), rgb(0.3,0.6,0), rgb(0.3,0,.6), 
+                  rgb(0,0.3,.6))
 plot_colours1 <- plot_colours[c(1,2)]
 
 for (i in c(1:10)) {
-  pdf(file=paste("~/Documents/Mathematical_Finance/", paste("Yield_Curve_c_", subbonds_c[10*i-9,6], ".pdf", sep=""), sep=""), width = 10, height = 6)
-  plot(subbonds_c[c((10*i-9):(10*i)),3], 100*subbonds_c[c((10*i-9):(10*i)),7], type="l", col=plot_colours1[1], ann=FALSE)
-  title(main=paste("Cont. Yield Curve for ", subbonds_c[10*i-9,6], sep=""), col.main="forestgreen", font.main=3)
+  pdf(file=paste("~/Documents/Mathematical_Finance/", paste("Yield_Curve_c_", 
+                                                            subbonds_c[10*i-9,6], 
+                                                            ".pdf", sep=""), sep=""), 
+      width = 10, height = 6)
+  plot(subbonds_c[c((10*i-9):(10*i)),3], 100*subbonds_c[c((10*i-9):(10*i)),7], 
+       type="l", col=plot_colours1[1], ann=FALSE)
+  title(main=paste("Cont. Yield Curve for ", subbonds_c[10*i-9,6], sep=""), 
+        col.main="forestgreen", font.main=3)
   title(xlab="Date", col.lab=rgb(0,0.6,.7))
   title(ylab="Yield (in %)" , col.lab=rgb(0,0.6,.7))
   dev.off()
 }
 
-plot(subbonds_c[c((1):(10)),3], 100*subbonds_c[c(1:10),7], type="l", col=plot_colours[1], ann=FALSE)
+plot(subbonds_c[c((1):(10)),3], 100*subbonds_c[c(1:10),7], type="l", 
+     col=plot_colours[1], ann=FALSE)
 lines(subbonds_c[c((10*2-9):(10*2)),3], 100*subbonds_c[c((10*2-9):(10*2)),7], type="l", 
       lty=1, col=plot_colours[2])
 lines(subbonds_c[c((10*3-9):(10*3)),3], 100*subbonds_c[c((10*3-9):(10*3)),7], type="l", 
@@ -139,7 +149,9 @@ title(main="All Yield Curves (Cont.)",
       col.main="forestgreen", font.main=4)
 title(xlab="Date", col.lab=rgb(0,0.6,.7))
 title(ylab="Yield (in %)" , col.lab=rgb(0,0.6,.7))
-legend(as.Date("2017-08-01"), 1.2, paste("Cont. Yield Curve for ", subbonds_c[c(1,11,21,31,41,51,61,71,81,91),6], sep=""), lty=c(1,1), 
+legend(as.Date("2017-08-01"), 1.2, paste("Cont. Yield Curve for ", 
+                                         subbonds_c[c(1,11,21,31,41,51,61,71,81,91),6], sep=""), 
+       lty=c(1,1), 
        lwd=c(2,2),cex=.8, bty = "n", col=plot_colours)
 
 #### Forward Rates ####
@@ -257,31 +269,41 @@ YY10<-YY1
 length(YY1)
 
 for (i in c(1:9)) {
-  YY2[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+10], subbonds_c$yield[i+11], length.out=200)
+  YY2[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+10], 
+                                     subbonds_c$yield[i+11], length.out=200)
 }
 for (i in c(1:9)) {
-  YY3[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+20], subbonds_c$yield[i+21], length.out=200)
+  YY3[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+20], 
+                                     subbonds_c$yield[i+21], length.out=200)
 }
 for (i in c(1:9)) {
-  YY4[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+30], subbonds_c$yield[i+31], length.out=200)
+  YY4[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+30], 
+                                     subbonds_c$yield[i+31], length.out=200)
 }
 for (i in c(1:9)) {
-  YY5[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+40], subbonds_c$yield[i+41], length.out=200)
+  YY5[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+40], 
+                                     subbonds_c$yield[i+41], length.out=200)
 }
 for (i in c(1:9)) {
-  YY6[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+50], subbonds_c$yield[i+51], length.out=200)
+  YY6[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+50], 
+                                     subbonds_c$yield[i+51], length.out=200)
 }
 for (i in c(1:9)) {
-  YY7[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+60], subbonds_c$yield[i+61], length.out=200)
+  YY7[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+60],
+                                     subbonds_c$yield[i+61],
+                                     length.out=200)
 }
 for (i in c(1:9)) {
-  YY8[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+70], subbonds_c$yield[i+71], length.out=200)
+  YY8[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+70], 
+                                     subbonds_c$yield[i+71], length.out=200)
 }
 for (i in c(1:9)) {
-  YY9[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+80], subbonds_c$yield[i+81], length.out=200)
+  YY9[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+80], 
+                                     subbonds_c$yield[i+81], length.out=200)
 }
 for (i in c(1:9)) {
-  YY10[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+90], subbonds_c$yield[i+91], length.out=200)
+  YY10[c((200*(i-1)+1):(200*i))]<-seq(subbonds_c$yield[i+90], 
+                                      subbonds_c$yield[i+91], length.out=200)
 }
 length(YY1)
 gucci2<-seq(1,5, length.out=2*899+1)
@@ -403,7 +425,8 @@ title(xlab="Year", col.lab=rgb(0,0.6,.7))
 title(ylab="f(t,T)" , col.lab=rgb(0,0.6,.7))
 lines(xl, predict(lonorm2,xl), col='red', lwd=2)
 
-legend(3.8, -.3, c(paste("Forward Curve for ", subbonds_c[c(1,11,21,31,41,51,61,71,81,91),6], sep=""),"Approx. Mean Frwd Curve"), lty=c(1,1), 
+legend(3.8, -.3, c(paste("Forward Curve for ", subbonds_c[c(1,11,21,31,41,51,61,71,81,91),6],
+                         sep=""),"Approx. Mean Frwd Curve"), lty=c(1,1), 
        lwd=c(2,2),cex=.75, bty = "n", col=c(plot_colours,"red"))
 
 
