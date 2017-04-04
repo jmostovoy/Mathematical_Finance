@@ -27,6 +27,7 @@ colnames(bonds) <- c("country","coupon",
 chgdate<-c(0, 44, 44*2, 44*3, 44*4, 44*5, 44*6, 
            44*7, 44*8, 44*8+43, 44*8+43*2)
 c((chgdate[10]+1):chgdate[11])
+chgdate
 
 #Initialize a date vector
 x<-rep(as.Date("2017-01-20"), 10)
